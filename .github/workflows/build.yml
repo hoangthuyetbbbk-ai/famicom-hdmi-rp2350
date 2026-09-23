@@ -13,11 +13,11 @@ jobs:
           git clone -b 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git
           cd pico-sdk
           git submodule update --init
-          cd..
+          cd. .
           git clone --depth 1 https://github.com/Wren6991/PicoDVI.git
           cd PicoDVI
           git submodule update --init
-          cd..
+          cd. .
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
