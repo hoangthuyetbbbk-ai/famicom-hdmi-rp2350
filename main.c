@@ -56,6 +56,11 @@ void core0_palette() {
 void core1_hdmi() {
     dvi0.timing = &dvi_timing_640x480p_60hz;
     dvi_init(&dvi0, next_striped_spin_lock_num(), next_striped_spin_lock_num());
+    #if PICO_PIO_USE_GPIO_BASE
+pio_set_gpio_base(DVI_DEFAULT_SERIAL_CONFIG.pio, 16);
+#endif
+dvi_register_irqs_this_core(&dvi0, DMA_IRQ_0);
+dvi_start(&dvi0);
     PIO pio = pio1; uint sm = 0;
     uint off = pio_add_program(pio, &pixel_sampler_program);
     pio_sm_config c = pixel_sampler_program_get_default_config(off);
