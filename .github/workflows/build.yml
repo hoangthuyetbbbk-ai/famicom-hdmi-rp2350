@@ -17,7 +17,7 @@ jobs:
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
         run: |
-          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350 -DPICODVI_PATH=${{ github.workspace }}/PicoDVI
+          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350-arm-s -DPICODVI_PATH=/home/runner/work/famicom-hdmi-rp2350/famicom-hdmi-rp2350/PicoDVI
           cmake --build build -j4
       - name: Upload
         uses: actions/upload-artifact@v4
