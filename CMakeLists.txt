@@ -2,21 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 project(famicom_hdmi C CXX ASM)
 pico_sdk_init()
-
-add_compile_definitions(PICO_PIO_USE_GPIO_BASE=1)
-
 set(PICODVI_PATH $ENV{PICODVI_PATH})
 add_subdirectory(${PICODVI_PATH}/software/libdvi libdvi)
-
 add_executable(famicom_hdmi main.c)
-
 pico_generate_pio_header(famicom_hdmi ${CMAKE_CURRENT_LIST_DIR}/ppu.pio)
-
 target_include_directories(famicom_hdmi PRIVATE ${CMAKE_CURRENT_LIST_DIR} ${PICODVI_PATH}/software/include)
-
-target_link_libraries(famicom_hdmi pico_stdlib hardware_pio hardware_clocks hardware_dma pico_multicore libdvi)
-
-# DÒNG QUAN TRỌNG CHO WAVESHARE RP2350 PIZERO
-target_compile_definitions(famicom_hdmi PRIVATE DVI_DEFAULT_PIO_INST=pio1 PICO_PIO_USE_GPIO_BASE=1)
-
+target_link_libraries(famicom_hdmi pico_stdlib hardware_pio hardware_clocks hardware_dma pico_multicore pico_util libdvi)
 pico_add_extra_outputs(famicom_hdmi)
