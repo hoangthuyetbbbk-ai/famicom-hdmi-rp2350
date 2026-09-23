@@ -1,0 +1,40 @@
+name: Build Famicom HDMI UF2
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git
+
+    - name: Setup Pico SDK
+    - name: Setup Pico SDK
+      run: |
+        git clone https://github.com/raspberrypi/pico-sdk.git pico-sdk
+        cd pico-sdk
+        git submodule update --init
+        cd ..
+      env:
+        PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
+
+    - name: Build project
+      run: |
+        mkdir build
+        cd build
+        cmake -DPICO_SDK_PATH=${{ github.workspace }}/pico-sdk ..
+        make -j4
+      env:
+        PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
+
+    - name: Upload UF2 Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: famicom_hdmi_uf2
+        path: build/famicom_hdmi.uf2
