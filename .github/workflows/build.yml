@@ -1,26 +1,28 @@
-name: Build Famicom HDMI UF2
+name: Build UF2
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install
+      - name: Install deps
         run: sudo apt update && sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git
-      - name: Clone
+      - name: Clone SDKs
         run: |
-          git clone https://github.com/raspberrypi/pico-sdk.git pico-sdk
-          git -C pico-sdk submodule update --init
-          git clone https://github.com/Wren6991/PicoDVI.git PicoDVI
-          git -C PicoDVI submodule update --init
+          rm -rf pico-sdk PicoDVI build
+          git clone --branch 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git pico-sdk
+          git -C pico-sdk submodule update --init --depth 1
+          git clone --depth 1 https://github.com/Wren6991/PicoDVI.git PicoDVI
+          git -C PicoDVI submodule update --init --depth 1
+          ls pico-sdk/src/rp2350.cmake
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
         run: |
-          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350-arm-s -DPICODVI_PATH=/home/runner/work/famicom-hdmi-rp2350/famicom-hdmi-rp2350/PicoDVI
+          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350-arm-s -DPICODVI_PATH=${{ github.workspace }}/PicoDVI
           cmake --build build -j4
-      - name: Upload
+      - name: Upload UF2
         uses: actions/upload-artifact@v4
         with:
-          name: uf2
+          name: famicom-hdmi-uf2
           path: build/*.uf2
