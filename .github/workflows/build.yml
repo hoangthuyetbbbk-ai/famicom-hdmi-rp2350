@@ -10,10 +10,13 @@ jobs:
       - name: Clone SDKs
         run: |
           git clone https://github.com/raspberrypi/pico-sdk.git pico-sdk
-          cd pico-sdk && git submodule update --init
+          cd pico-sdk
+          git submodule update --init
           cd..
           git clone https://github.com/Wren6991/PicoDVI.git PicoDVI
-          cd PicoDVI && git submodule update --init
+          cd PicoDVI
+          git submodule update --init
+          cd..
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
