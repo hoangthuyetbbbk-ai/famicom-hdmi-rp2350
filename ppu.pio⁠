@@ -1,0 +1,17 @@
+.program palette_sniffer
+.wrap_target
+    wait 0 gpio 13
+    mov osr, null
+    in pins, 16
+    push block
+.wrap
+
+.program pixel_sampler
+.wrap_target
+    wait 1 gpio 20
+    mov x, 63
+pixel_loop:
+    in pins, 32
+    jmp x-- pixel_loop
+    push block
+.wrap
