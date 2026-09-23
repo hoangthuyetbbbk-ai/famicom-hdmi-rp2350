@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.13)
 include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 project(famicom_hdmi C CXX ASM)
 set(PICO_BOARD waveshare_rp2350_pizero)
-set(PICO_PLATFORM rp2350)
 pico_sdk_init()
 
 if(DEFINED ENV{PICODVI_PATH})
