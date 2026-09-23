@@ -11,16 +11,20 @@ jobs:
         run: |
           rm -rf pico-sdk PicoDVI build
           git clone -b 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git
-          cd pico-sdk && git submodule update --init && cd..
+          cd pico-sdk
+          git submodule update --init
+          cd..
           git clone --depth 1 https://github.com/Wren6991/PicoDVI.git
-          cd PicoDVI && git submodule update --init && cd..
+          cd PicoDVI
+          git submodule update --init
+          cd..
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
           PICODVI_PATH: ${{ github.workspace }}/PicoDVI
         run: |
           cmake -B build -S. -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --verbose -j1
+          cmake --build build -j1
       - uses: actions/upload-artifact@v4
         with:
           name: uf2
