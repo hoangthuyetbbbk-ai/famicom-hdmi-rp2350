@@ -7,13 +7,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: sudo apt update && sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
-      - name: Get SDKs
+      - name: Get SDKs and PATCH for PiZero
         run: |
           rm -rf pico-sdk PicoDVI build
           git clone -b 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git
           git -C pico-sdk submodule update --init
           git clone --depth 1 https://github.com/Wren6991/PicoDVI.git
           git -C PicoDVI submodule update --init
+          # --- PATCH QUAN TRỌNG CHO GPIO 32-39 ---
+          sed -i 's/pio_sm_set_pins_with_mask/pio_sm_set_pins_with_mask64/g' PicoDVI/software/libdvi/dvi_serialiser.c
+          sed -i 's/pio_sm_set_pindirs_with_mask/pio_sm_set_pindirs_with_mask64/g' PicoDVI/software/libdvi/dvi_serialiser.c
+          sed -i 's/3ULL << data_pins/3ULL << data_pins/g' PicoDVI/software/libdvi/dvi_serialiser.c || true
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
