@@ -7,22 +7,19 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: sudo apt update && sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
-      - name: Get SDKs + PATCH
+      - name: Get SDK + libdvi XỊN của Waveshare
         run: |
-          rm -rf pico-sdk PicoDVI build
+          rm -rf pico-sdk lib build
           git clone -b 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git
           git -C pico-sdk submodule update --init
-          git clone --depth 1 https://github.com/Wren6991/PicoDVI.git
-          git -C PicoDVI submodule update --init
-          sed -i 's/pio_sm_set_pins_with_mask(/pio_sm_set_pins_with_mask64(pio, sm, 2ULL << data_pins, 3ULL << data_pins); \/\/p\n \/\/orig: pio_sm_set_pins_with_mask(/g' PicoDVI/software/libdvi/dvi_serialiser.c || true
-          sed -i 's/pio_sm_set_pindirs_with_mask/pio_sm_set_pindirs_with_mask64/g' PicoDVI/software/libdvi/dvi_serialiser.c
-          sed -i 's/\.side_set 2/.side_set 2 opt/' PicoDVI/software/libdvi/dvi_serialiser.pio
+          git clone --depth 1 https://github.com/ugufru/xroar-waveshare-rp2350-pizero.git tmp
+          cp -r tmp/lib lib
+          rm -rf tmp
       - name: Build
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
-          PICODVI_PATH: ${{ github.workspace }}/PicoDVI
         run: |
-          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_zero -DPICO_PLATFORM=rp2350 -DPICO_COPY_TO_RAM=1 -DDVI_DEFAULT_SERIAL_CONFIG=waveshare_rp2350_pizero -DPICO_PIO_USE_GPIO_BASE=1 -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350 -DPICO_COPY_TO_RAM=1 -DCMAKE_BUILD_TYPE=Release
           cmake --build build -j1
       - uses: actions/upload-artifact@v4
         with:
