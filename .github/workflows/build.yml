@@ -7,17 +7,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install deps
         run: sudo apt update && sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
-      - name: Get SDKs + PATCH CHUẨN Waveshare PiZero
+      - name: Get SDKs + PATCH
         run: |
           rm -rf pico-sdk PicoDVI build
           git clone -b 2.1.1 --depth 1 https://github.com/raspberrypi/pico-sdk.git
           git -C pico-sdk submodule update --init
           git clone --depth 1 https://github.com/Wren6991/PicoDVI.git
           git -C PicoDVI submodule update --init
-          # PATCH 1: dvi_serialiser.c dùng mask 64-bit
-          sed -i 's/pio_sm_set_pins_with_mask(/pio_sm_set_pins_with_mask64(pio, sm, 2ULL << data_pins, 3ULL << data_pins); \/\/patched\n \/\/orig: pio_sm_set_pins_with_mask(/g' PicoDVI/software/libdvi/dvi_serialiser.c || true
+          sed -i 's/pio_sm_set_pins_with_mask(/pio_sm_set_pins_with_mask64(pio, sm, 2ULL << data_pins, 3ULL << data_pins); \/\/p\n \/\/orig: pio_sm_set_pins_with_mask(/g' PicoDVI/software/libdvi/dvi_serialiser.c || true
           sed -i 's/pio_sm_set_pindirs_with_mask/pio_sm_set_pindirs_with_mask64/g' PicoDVI/software/libdvi/dvi_serialiser.c
-          # PATCH 2: dvi_serialiser.pio side_set + mask64 - ĐÂY LÀ CHÌA KHÓA
           sed -i 's/\.side_set 2/.side_set 2 opt/' PicoDVI/software/libdvi/dvi_serialiser.pio
       - name: Build
         env:
