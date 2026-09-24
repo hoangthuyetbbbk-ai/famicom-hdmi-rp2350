@@ -23,11 +23,11 @@ static uint8_t line_buf[64];
 static struct dvi_inst dvi0;
 
 static const struct dvi_serialiser_cfg waveshare_rp2350_pizero_cfg = {
-  .pio = pio1,
-  .sm_tmds = {0, 1, 2},
-  .pins_tmds = {36, 34, 32},
-  .pins_clk = 38,
-  .invert_diffpairs = false
+ .pio = pio1,
+ .sm_tmds = {0, 1, 2},
+ .pins_tmds = {36, 34, 32},
+ .pins_clk = 38,
+ .invert_diffpairs = false
 };
 
 void core0_palette() {
@@ -61,7 +61,6 @@ void core1_hdmi() {
     pio_set_gpio_base(dvi0.ser_cfg.pio, 16);
     dvi_register_irqs_this_core(&dvi0, DMA_IRQ_0);
     dvi_start(&dvi0);
-
     PIO pio = pio1;
     uint sm = 1;
     uint off = pio_add_program(pio, &pixel_sampler_program);
@@ -70,7 +69,6 @@ void core1_hdmi() {
     sm_config_set_in_shift(&c, true, true, 32);
     pio_sm_init(pio, sm, off, &c);
     pio_sm_set_enabled(pio, sm, true);
-
     while(1){
         while(gpio_get(VBL)==0) tight_loop_contents();
         for(int y=0;y<240;y++){
