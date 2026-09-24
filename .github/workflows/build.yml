@@ -19,7 +19,7 @@ jobs:
         env:
           PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
         run: |
-          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_pizero -DPICO_PLATFORM=rp2350 -DPICO_COPY_TO_RAM=1 -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -S. -DPICO_BOARD=waveshare_rp2350_zero -DPICO_PLATFORM=rp2350 -DPICO_COPY_TO_RAM=1 -DCMAKE_BUILD_TYPE=Release
           cmake --build build -j1
       - uses: actions/upload-artifact@v4
         with:
